@@ -9,8 +9,7 @@ import axios from "axios";
 
 import { Loader } from "@/components/ui/loader";
 
-
-const BACKEND_URL = import.meta.env.VITE_API_URL
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const SignUp = () => {
     const [formData, setFormData] = useState({
@@ -39,7 +38,7 @@ const SignUp = () => {
                 });
                 return;
             }
-
+            setLoading(true);
             const response = await axios.post(
                 `${BACKEND_URL}/user/otp`,
                 formData
@@ -60,8 +59,15 @@ const SignUp = () => {
                 });
                 return;
             }
+            setLoading(false);
         } catch (error: any) {
-            console.log(error);
+            setLoading(false);
+            console.error(error);
+            toast({
+                title: "Error",
+                description: error.response?.data?.message || "Server error",
+                variant: "destructive",
+            });
         }
     };
 
@@ -89,30 +95,31 @@ const SignUp = () => {
                 toast({
                     title: "Account Created",
                     description:
-                    "Welcome to HD! Your account has been created successfully.",
+                        "Welcome to HD! Your account has been created successfully.",
                 });
-                
+
                 setTimeout(() => {
                     navigate("/dashboard");
                 }, 1000);
             }
         } catch (error: any) {
-               setLoading(false);
-        if (error.response) {
-            // Backend error
-            toast({
-                title: "Error",
-                description: error.response.data.message || "Something went wrong.",
-                variant: "destructive",
-            });
-        } else {
-            // Network / unexpected error
-            toast({
-                title: "Error",
-                description: "Unable to connect to server.",
-                variant: "destructive",
-            });
-        }
+            setLoading(false);
+            if (error.response) {
+                // Backend error
+                toast({
+                    title: "Error",
+                    description:
+                        error.response.data.message || "Something went wrong.",
+                    variant: "destructive",
+                });
+            } else {
+                // Network / unexpected error
+                toast({
+                    title: "Error",
+                    description: "Unable to connect to server.",
+                    variant: "destructive",
+                });
+            }
         }
     };
 

@@ -12,6 +12,7 @@ import { Loader } from "@/components/ui/loader";
 import axios from "axios";
 
 
+
 const BACKEND_URL = import.meta.env.VITE_API_URL
 
 const SignIn = () => {
@@ -40,7 +41,7 @@ const SignIn = () => {
                 });
                 return;
             }
-
+            setLoading(true)
             const response = await axios.post(
                 `${BACKEND_URL}/user/otp`,
                 { email: formData.email }
@@ -59,7 +60,9 @@ const SignIn = () => {
                     variant: "destructive",
                 });
             }
+            setLoading(false);
         } catch (error: any) {
+            setLoading(false)
             console.error(error);
             toast({
                 title: "Error",
